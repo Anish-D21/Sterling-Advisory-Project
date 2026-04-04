@@ -4,7 +4,7 @@
 
 
 
-\
+
 
 > **"Not just a calculator. A Financial Guardrail."**
 
