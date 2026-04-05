@@ -806,3 +806,17 @@ input:checked + .toggle-slider::before { transform: translateX(18px); }
   .chatbot-hero { flex-wrap: wrap; }
   .msg-bubble { max-width: 88%; }
 }
+
+/* SIP Specific Fixes */
+#sip .two-col-layout {
+    align-items: start;
+}
+
+#sip canvas {
+    max-height: 250px !important;
+    width: 100% !important;
+}
+
+.text-green {
+    color: var(--green-safe) !important;
+}

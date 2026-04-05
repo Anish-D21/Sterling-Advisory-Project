@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -129,6 +131,18 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
           CIBIL Simulator
+        </a>
+        <a href="#" class="nav-item" data-section="sip" onclick="Nav.show('sip',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+          SIP Calculator
+        </a>
+        <a href="#" class="nav-item" data-section="swp" onclick="Nav.show('swp',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+          SWP Calculator
         </a>
         <a href="#" class="nav-item" data-section="insights" onclick="Nav.show('insights',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -666,6 +680,146 @@
         </div>
       </section>
 
+      <section id="section-sip" class="section hidden">
+        <div class="chatbot-header-card glass-card">
+          <h2 class="page-title">SIP Wealth Predictor</h2>
+          <p class="page-sub">Project your long-term wealth through systematic investing.</p>
+        </div>
+
+        <div class="two-col-layout">
+
+          <!-- LEFT: Investment Details -->
+          <div class="glass-card">
+            <div class="card-title">Investment Details</div>
+            <div class="input-group">
+              <label>Monthly Investment (₹)</label>
+              <input type="number" id="sip-amt" class="sterling-input" value="10000" oninput="SIP.calculate()">
+            </div>
+            <div class="input-group">
+              <label>Expected Return Rate (% p.a.)</label>
+              <input type="number" id="sip-rate" class="sterling-input" value="12" oninput="SIP.calculate()">
+            </div>
+            <div class="input-group">
+              <label>Investment Period (Years)</label>
+              <input type="number" id="sip-years" class="sterling-input" value="10" oninput="SIP.calculate()">
+            </div>
+            <div class="input-group">
+              <label>Annual Step-Up (%) <span class="badge-info">Pro</span></label>
+              <input type="number" id="sip-stepup" class="sterling-input" value="0" oninput="SIP.calculate()">
+            </div>
+            <div class="toggle-row">
+              <span>Adjust for Inflation (6%)</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="sip-inflation" onchange="SIP.calculate()">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- RIGHT: Wealth Summary -->
+          <div class="glass-card">
+            <div class="card-title">Wealth Summary</div>
+            <div class="result-box">
+              <div class="result-row">
+                <span>Total Invested</span>
+                <strong id="res-sip-invested">₹0</strong>
+              </div>
+              <div class="result-row">
+                <span>Wealth Gained</span>
+                <strong id="res-sip-gains" class="text-green">₹0</strong>
+              </div>
+              <div class="result-row">
+                <span>Total Corpus</span>
+                <strong id="res-sip-total" style="color: var(--accent); font-size: 1.2rem;">₹0</strong>
+              </div>
+            </div>
+            <div style="height: 220px; margin-top: 20px;">
+              <canvas id="sipChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="section-swp" class="section hidden">
+        <div class="glass-card chatbot-header-card">
+          <h2 class="page-title">💸 SWP Retirement Simulator</h2>
+          <p class="page-sub">Simulate systematic withdrawals from your corpus during retirement.</p>
+        </div>
+
+        <div class="two-col-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="glass-card">
+            <div class="card-title">Withdrawal Parameters</div>
+            <div class="input-group">
+              <label>Initial Corpus (₹)</label>
+              <input type="number" id="swp-corpus" class="sterling-input" placeholder="10000000"
+                oninput="SWP.compute()">
+            </div>
+            <div class="input-group">
+              <label>Monthly Withdrawal (₹)</label>
+              <input type="number" id="swp-withdraw" class="sterling-input" placeholder="50000" oninput="SWP.compute()">
+            </div>
+            <div class="input-group">
+              <label>Expected Return (% p.a.)</label>
+              <input type="number" id="swp-rate" class="sterling-input" value="10" oninput="SWP.compute()">
+            </div>
+            <div class="input-group">
+              <label>Time Horizon (Years)</label>
+              <input type="number" id="swp-years" class="sterling-input" placeholder="20" oninput="SWP.compute()">
+            </div>
+            <div class="input-group">
+              <label>Inflation on Withdrawal (% p.a.)</label>
+              <input type="number" id="swp-inflation" class="sterling-input" value="0" placeholder="0"
+                oninput="SWP.compute()">
+            </div>
+            <div id="swp-error" style="color:var(--red-danger); font-size:12px; margin-top:8px;"></div>
+
+            <div class="result-box" style="margin-top:16px">
+              <div class="result-row">
+                <span>Total Withdrawn</span>
+                <strong id="swp-withdrawn">—</strong>
+              </div>
+              <div class="result-row">
+                <span>Remaining Corpus</span>
+                <strong id="swp-balance">—</strong>
+              </div>
+              <div class="result-row">
+                <span>Corpus Depletion</span>
+                <strong id="swp-depletion">—</strong>
+              </div>
+              <div class="result-row">
+                <span>Total Interest Earned</span>
+                <strong id="swp-interest">—</strong>
+              </div>
+              <div class="result-row">
+                <span>Safe Withdrawal Rate</span>
+                <strong id="swp-swr">—</strong>
+              </div>
+              <div class="result-row">
+                <span>Corpus Lasts</span>
+                <strong id="swp-lasting">—</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Chart + Health -->
+          <div>
+            <div class="glass-card mb-4">
+              <h3 class="card-title">Corpus vs Withdrawal Over Time</h3>
+              <canvas id="swp-chart" height="220"></canvas>
+            </div>
+            <div class="glass-card">
+              <h3 class="card-title">Retirement Safety Meter</h3>
+              <div id="swp-health" style="font-size:20px; font-weight:600; margin-bottom:8px;">—</div>
+              <div id="swp-advice" style="font-size:13px; color:var(--text-muted); line-height:1.6;">—</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       <!-- ── SECTION: INSIGHTS ── -->
       <section id="section-insights" class="section hidden">
         <div class="glass-card mb-4">
@@ -750,6 +904,8 @@
   <script src="js/charts.js"></script>
   <script src="js/insights.js"></script>
   <script src="js/chatbot.js"></script>
+  <script src="js/sip.js"></script>
+  <script src="js/swp.js"></script>
 
 </body>
 
