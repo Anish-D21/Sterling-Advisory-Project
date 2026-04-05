@@ -309,25 +309,53 @@ function simulateCIBIL({ currentScore, secured, unsecured, enquiries, utilizatio
 // ══════════════════════════════════════════════════════════════════
 //  CALCULATOR MODULE (UI Controller)
 // ══════════════════════════════════════════════════════════════════
+function updateSmartEMI() {
+  const income = parseFloat(document.getElementById('p-income')?.value) || 0;
+  const existingEMI = parseFloat(document.getElementById('p-existing-emi')?.value) || 0;
+
+  const safeLimit = income * 0.40;
+  const maxLimit  = income * 0.50;
+
+  const safeEMI = Math.max(0, safeLimit - existingEMI);
+  const maxEMI  = Math.max(0, maxLimit - existingEMI);
+
+  const safeEl = document.getElementById('smart-safe-emi');
+  const maxEl  = document.getElementById('smart-max-emi');
+
+  if (safeEl) safeEl.textContent = formatINR(safeEMI);
+  if (maxEl)  maxEl.textContent  = formatINR(maxEMI);
+}
 
 const Calculator = (() => {
   let tableVisible = false;
   let currentSchedule = [];
   let currentYearPage = 0;
 
+  function getSmartEMIRecommendation(income, existingEMI) {
+    const safeLimit = income * 0.40;
+    const maxLimit  = income * 0.50;
+
+    const safeEMI = Math.max(0, safeLimit - existingEMI);
+    const maxEMI  = Math.max(0, maxLimit - existingEMI);
+
+    return {
+      safeEMI,
+      maxEMI
+    };
+  }
   function compute() {
     const principal = parseFloat(document.getElementById('c-principal').value) || 0;
     const rate      = parseFloat(document.getElementById('c-rate').value) || 0;
     const tenure    = parseInt(document.getElementById('c-tenure').value) || 0;
     const feeP      = parseFloat(document.getElementById('c-fee').value) || 0;
     const includeGST = document.getElementById('c-gst').checked;
-
+    
     if (!principal || !rate || !tenure) {
       clearResults(); return;
     }
 
     // Core calculations
-    const emi        = calcEMI(principal, rate, tenure);
+    const emi = calcEMI(principal, rate, tenure);
     const disbursal  = calcDisbursal(principal, feeP, includeGST);
     const interest   = calcTotalInterest(emi, tenure, principal);
     const totalOut   = emi * tenure + (principal - disbursal); // EMIs + upfront cost
@@ -337,6 +365,14 @@ const Calculator = (() => {
     const existingEMI = parseFloat(document.getElementById('p-existing-emi').value) || 0;
     const newFOIR     = income > 0 ? calcFOIR(existingEMI + emi, income) : null;
 
+    // already exists above
+    // const income = ...
+    // const existingEMI = ...
+
+    const rec = getSmartEMIRecommendation(income, existingEMI);
+
+    document.getElementById('smart-safe-emi').textContent = formatINR(rec.safeEMI);
+    document.getElementById('smart-max-emi').textContent  = formatINR(rec.maxEMI);
     // Display results
     document.getElementById('r-emi').textContent       = formatINR(emi, 0);
     document.getElementById('r-disbursal').textContent = formatINR(disbursal, 0);
@@ -359,6 +395,7 @@ const Calculator = (() => {
 
     // Refresh table if open
     if (tableVisible) renderTable();
+    updateSmartEMI();
   }
 
   function getFOIRTag(foir) {
@@ -518,6 +555,7 @@ const Dashboard = (() => {
 
     // FOIR gauge
     Charts.renderFOIRGauge(foir);
+    updateSmartEMI();
   }
 
   function updateHealthBadge(foir, runway, budget) {
@@ -760,3 +798,16 @@ const Cibil = (() => {
 
   return { analyze };
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const incomeInput = document.getElementById("p-income");
+  const emiInput = document.getElementById("p-existing-emi");
+
+  if (incomeInput) {
+    incomeInput.addEventListener("input", updateSmartEMI);
+  }
+
+  if (emiInput) {
+    emiInput.addEventListener("input", updateSmartEMI);
+  }
+});
