@@ -24,7 +24,7 @@ app.use(helmet({
 
 // Allow frontend requests
 app.use(cors({
-  origin: "*",   // for development (lock this in production)
+  origin: process.env.FRONTEND_URL || "*",
   credentials: true
 }));
 
@@ -69,6 +69,7 @@ async function connectDB() {
     console.log(`✅ MongoDB connected: ${conn.connection.host}`);
   } catch (err) {
     console.log('⚠️ MongoDB not connected — running in demo mode');
+    console.error(err.message);
   }
 }
 
