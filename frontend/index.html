@@ -1,555 +1,756 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sterling Advisory — Financial Guardrail</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
 </head>
+
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════════════
      AUTH OVERLAY
 ═══════════════════════════════════════════════════════════════ -->
-<div id="auth-overlay" class="auth-overlay">
-  <div class="auth-card glass-card">
-    <div class="auth-logo">
-      <span class="logo-mark">S</span>
-      <div>
-        <h1 class="logo-title">Sterling Advisory</h1>
-        <p class="logo-sub">Your Financial Guardrail</p>
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-card glass-card">
+      <div class="auth-logo">
+        <span class="logo-mark">S</span>
+        <div>
+          <h1 class="logo-title">Sterling Advisory</h1>
+          <p class="logo-sub">Your Financial Guardrail</p>
+        </div>
       </div>
-    </div>
 
-    <!-- Login Form -->
-    <div id="login-form" class="auth-form">
-      <h2 class="form-heading">Welcome Back</h2>
-      <p class="form-sub">Sign in to your financial dashboard</p>
-      <div class="input-group">
-        <label>Email Address</label>
-        <input type="email" id="login-email" placeholder="you@example.com" class="sterling-input" />
+      <!-- Login Form -->
+      <div id="login-form" class="auth-form">
+        <h2 class="form-heading">Welcome Back</h2>
+        <p class="form-sub">Sign in to your financial dashboard</p>
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="you@example.com" class="sterling-input" />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" class="sterling-input" />
+        </div>
+        <button onclick="Auth.login()" class="btn-primary w-full">Sign In</button>
+        <p class="switch-text">No account? <a onclick="Auth.showRegister()" class="link-gold">Create new account</a></p>
+        <div id="login-error" class="error-msg hidden"></div>
       </div>
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="login-password" placeholder="••••••••" class="sterling-input" />
-      </div>
-      <button onclick="Auth.login()" class="btn-primary w-full">Sign In</button>
-      <p class="switch-text">No account? <a onclick="Auth.showRegister()" class="link-gold">Create new account</a></p>
-      <div id="login-error" class="error-msg hidden"></div>
-    </div>
 
-    <!-- Register Form -->
-    <div id="register-form" class="auth-form hidden">
-      <h2 class="form-heading">Create Account</h2>
-      <p class="form-sub">Start your stress-tested financial journey</p>
-      <div class="input-group">
-        <label>Full Name</label>
-        <input type="text" id="reg-name" placeholder="Arjun Sharma" class="sterling-input" />
+      <!-- Register Form -->
+      <div id="register-form" class="auth-form hidden">
+        <h2 class="form-heading">Create Account</h2>
+        <p class="form-sub">Start your stress-tested financial journey</p>
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Arjun Sharma" class="sterling-input" />
+        </div>
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" class="sterling-input" />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Min. 8 characters" class="sterling-input" />
+        </div>
+        <button onclick="Auth.register()" class="btn-primary w-full">Create Account</button>
+        <p class="switch-text">Have an account? <a onclick="Auth.showLogin()" class="link-gold">Sign in</a></p>
+        <div id="reg-error" class="error-msg hidden"></div>
       </div>
-      <div class="input-group">
-        <label>Email Address</label>
-        <input type="email" id="reg-email" placeholder="you@example.com" class="sterling-input" />
-      </div>
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="reg-password" placeholder="Min. 8 characters" class="sterling-input" />
-      </div>
-      <button onclick="Auth.register()" class="btn-primary w-full">Create Account</button>
-      <p class="switch-text">Have an account? <a onclick="Auth.showLogin()" class="link-gold">Sign in</a></p>
-      <div id="reg-error" class="error-msg hidden"></div>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════════════
      MAIN APP
 ═══════════════════════════════════════════════════════════════ -->
-<div id="app" class="hidden app-layout">
+  <div id="app" class="hidden app-layout">
 
-  <!-- SIDEBAR -->
-  <aside id="sidebar" class="sidebar glass-card">
-    <div class="sidebar-logo">
-      <span class="logo-mark-sm">S</span>
-      <span class="sidebar-brand">Sterling</span>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active" data-section="dashboard" onclick="Nav.show('dashboard',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Dashboard
-      </a>
-      <a href="#" class="nav-item" data-section="calculator" onclick="Nav.show('calculator',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
-        EMI Calculator
-      </a>
-      <a href="#" class="nav-item" data-section="stress" onclick="Nav.show('stress',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        Stress Test
-      </a>
-      <a href="#" class="nav-item" data-section="goals" onclick="Nav.show('goals',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-        Goal Planner
-      </a>
-      <a href="#" class="nav-item" data-section="cibil" onclick="Nav.show('cibil',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        CIBIL Simulator
-      </a>
-      <a href="#" class="nav-item" data-section="insights" onclick="Nav.show('insights',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 20h20M6 20V10l6-7 6 7v10M10 20v-5h4v5"/></svg>
-        Insights
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <button onclick="Theme.toggle()" class="theme-btn" id="theme-btn">
-        <span id="theme-icon">🌙</span> Dark Mode
-      </button>
-      <button onclick="Auth.logout()" class="logout-btn">Sign Out</button>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
-
-    <!-- STICKY HEADER -->
-    <header class="sticky-header glass-card">
-      <div class="header-left">
-        <button onclick="toggleSidebar()" class="hamburger">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar glass-card">
+      <div class="sidebar-logo">
+        <span class="logo-mark-sm">S</span>
+        <span class="sidebar-brand">Sterling</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="dashboard" onclick="Nav.show('dashboard',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item" data-section="chatbot" onclick="Nav.show('chatbot',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          AI Advisor
+        </a>
+        <a href="#" class="nav-item" data-section="calculator" onclick="Nav.show('calculator',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="4" y="2" width="16" height="20" rx="2" />
+            <line x1="8" y1="6" x2="16" y2="6" />
+            <line x1="8" y1="10" x2="16" y2="10" />
+            <line x1="8" y1="14" x2="12" y2="14" />
+          </svg>
+          EMI Calculator
+        </a>
+        <a href="#" class="nav-item" data-section="stress" onclick="Nav.show('stress',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+          Stress Test
+        </a>
+        <a href="#" class="nav-item" data-section="goals" onclick="Nav.show('goals',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" />
+          </svg>
+          Goal Planner
+        </a>
+        <a href="#" class="nav-item" data-section="cibil" onclick="Nav.show('cibil',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          CIBIL Simulator
+        </a>
+        <a href="#" class="nav-item" data-section="insights" onclick="Nav.show('insights',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M2 20h20M6 20V10l6-7 6 7v10M10 20v-5h4v5" />
+          </svg>
+          Insights
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="Theme.toggle()" class="theme-btn" id="theme-btn">
+          <span id="theme-icon">🌙</span> Dark Mode
         </button>
-        <div>
-          <h2 id="page-title" class="page-title">Dashboard</h2>
-          <p class="page-sub" id="page-sub">Financial Health Overview</p>
-        </div>
+        <button onclick="Auth.logout()" class="logout-btn">Sign Out</button>
       </div>
-      <div class="header-right">
-        <div class="health-badge" id="health-badge">
-          <span class="badge-dot"></span>
-          <span id="health-label">Healthy</span>
-        </div>
-        <div class="user-avatar" id="user-avatar">A</div>
-      </div>
-    </header>
+    </aside>
 
-    <!-- ── SECTION: DASHBOARD ── -->
-    <section id="section-dashboard" class="section active">
-      <!-- Profile Quick Setup -->
-      <div class="glass-card profile-setup-card" id="profile-setup">
-        <h3 class="card-title">⚡ Quick Financial Profile</h3>
-        <p class="card-sub">Set up your profile to unlock all features</p>
-        <div class="profile-grid">
-          <div class="input-group">
-            <label>Monthly In-Hand Income (₹) <span class="tooltip-icon" data-tip="post-tax">?</span></label>
-            <input type="number" id="p-income" placeholder="75000" class="sterling-input" oninput="Dashboard.update()" />
-            <div class="tooltip-card" data-for="post-tax">Post-tax, post-deductions take-home salary</div>
-          </div>
-          <div class="input-group">
-            <label>Monthly Rent / Housing (₹)</label>
-            <input type="number" id="p-rent" placeholder="20000" class="sterling-input" oninput="Dashboard.update()" />
-          </div>
-          <div class="input-group">
-            <label>Existing EMIs (₹/month)</label>
-            <input type="number" id="p-existing-emi" placeholder="5000" class="sterling-input" oninput="Dashboard.update()" />
-          </div>
-          <div class="input-group">
-            <label>Monthly Savings (₹)</label>
-            <input type="number" id="p-savings" placeholder="10000" class="sterling-input" oninput="Dashboard.update()" />
-          </div>
-          <div class="input-group">
-            <label>Monthly Discretionary Spend (₹)</label>
-            <input type="number" id="p-wants" placeholder="15000" class="sterling-input" oninput="Dashboard.update()" />
-          </div>
-          <div class="input-group">
-            <label>Emergency Fund / Savings Balance (₹)</label>
-            <input type="number" id="p-emergency" placeholder="100000" class="sterling-input" oninput="Dashboard.update()" />
-          </div>
-        </div>
-      </div>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
-      <!-- KPI Cards Row -->
-      <div class="kpi-row">
-        <div class="kpi-card glass-card">
-          <div class="kpi-label">
-            <span class="link-insight" onclick="goToInsight('foir')">FOIR <span class="tooltip-icon" data-tip="foir-why">?</span></span>
+      <!-- STICKY HEADER -->
+      <header class="sticky-header glass-card">
+        <div class="header-left">
+          <button onclick="toggleSidebar()" class="hamburger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <div>
+            <h2 id="page-title" class="page-title">Dashboard</h2>
+            <p class="page-sub" id="page-sub">Financial Health Overview</p>
           </div>
-          <div class="kpi-value" id="kpi-foir">—</div>
-          <div class="kpi-status" id="kpi-foir-status">Enter income</div>
-          <div class="tooltip-card" data-for="foir-why">Fixed Obligation to Income Ratio — Indian banks cap this at 50%. Beyond 50%, you're in the "debt trap zone" where a single job loss cascades into default.</div>
         </div>
-        <div class="kpi-card glass-card">
-          <div class="kpi-label">
-            <span class="link-insight" onclick="goToInsight('budget')">50/30/20 Score<span class="tooltip-icon" data-tip="budget-why">?</span></span>
+        <div class="header-right">
+          <div class="health-badge" id="health-badge">
+            <span class="badge-dot"></span>
+            <span id="health-label">Healthy</span>
           </div>
-          <div class="kpi-value" id="kpi-budget">—</div>
-          <div class="kpi-status" id="kpi-budget-status">Enter spend data</div>
+          <div class="user-avatar" id="user-avatar">A</div>
         </div>
-        <div class="kpi-card glass-card">
-          <div class="kpi-label">Loan Eligibility</div>
-          <div class="kpi-value" id="kpi-eligibility">—</div>
-          <div class="kpi-status" id="kpi-elig-status">Based on 50% FOIR</div>
-        </div>
-        <div class="kpi-card glass-card">
-          <div class="kpi-label">
-            <span class="link-insight" onclick="goToInsight('emergency')">Runway (months) <span class="tooltip-icon" data-tip="runway-why">?</span></span>
-          </div>
-          <div class="kpi-value" id="kpi-runway">—</div>
-          <div class="kpi-status" id="kpi-runway-status">Without income</div>
-          <div class="tooltip-card" data-for="runway-why">How many months your savings cover all fixed obligations (rent + EMIs) in a zero-income scenario.</div>
-        </div>
-      </div>
+      </header>
 
-      <!-- Charts Row -->
-      <div class="charts-row">
-        <div class="glass-card chart-card">
-          <h3 class="card-title">Budget Breakdown <span class="badge-info">50/30/20</span></h3>
-          <canvas id="budget-chart" height="220"></canvas>
-          <div id="lifestyle-alert" class="lifestyle-alert hidden">
-            ⚠️ <strong>Lifestyle Alert:</strong> Your "Needs" exceed 60% of income. Consider reducing fixed commitments before taking new loans.
-          </div>
-        </div>
-        <div class="glass-card chart-card">
-          <h3 class="card-title">FOIR Gauge</h3>
-          <canvas id="foir-chart" height="220"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SECTION: EMI CALCULATOR ── -->
-    <section id="section-calculator" class="section hidden">
-      <div class="two-col-layout">
-        <!-- Left: Inputs -->
-        <div class="glass-card">
-          <h3 class="card-title">Loan Parameters</h3>
-          <div class="input-group">
-            <label>Loan Amount (₹) <span class="tooltip-icon" data-tip="rb-why">?</span></label>
-            <input type="number" id="c-principal" placeholder="500000" class="sterling-input" oninput="Calculator.compute()" />
-            <div class="tooltip-card" data-for="rb-why">Reducing Balance method: interest is charged only on outstanding principal, not the original amount. This is how you save vs flat-rate loans.</div>
-          </div>
-          <div class="input-group">
-            <label>Annual Interest Rate (%)</label>
-            <input type="number" id="c-rate" placeholder="10.5" step="0.1" class="sterling-input" oninput="Calculator.compute()" />
-          </div>
-          <div class="input-group">
-            <label>Tenure (Months)</label>
-            <input type="number" id="c-tenure" placeholder="60" class="sterling-input" oninput="Calculator.compute()" />
-          </div>
-          <div class="input-group">
-            <label>Processing Fee (%)</label>
-            <input type="number" id="c-fee" placeholder="2" step="0.1" class="sterling-input" value="2" oninput="Calculator.compute()" />
-          </div>
-          <div class="toggle-row">
-            <label>Include GST on Fee (18%)</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="c-gst" checked onchange="Calculator.compute()" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <div class="result-box" id="calc-result-box">
-            <div class="result-row"><span>Gross EMI</span><strong id="r-emi">—</strong></div>
-            <div class="result-row"><span>Actual Disbursal (After Fee+GST)</span><strong id="r-disbursal">—</strong></div>
-            <div class="result-row"><span>Total Interest Paid</span><strong id="r-interest" class="text-amber">—</strong></div>
-            <div class="result-row"><span>Total Outflow</span><strong id="r-total">—</strong></div>
-            <div class="result-row foir-row"><span>New FOIR (with this loan)</span><strong id="r-foir">—</strong></div>
+      <!-- ── SECTION: DASHBOARD ── -->
+      <section id="section-dashboard" class="section active">
+        <!-- Profile Quick Setup -->
+        <div class="glass-card profile-setup-card" id="profile-setup">
+          <h3 class="card-title">⚡ Quick Financial Profile</h3>
+          <p class="card-sub">Set up your profile to unlock all features</p>
+          <div class="profile-grid">
+            <div class="input-group">
+              <label>Monthly In-Hand Income (₹) <span class="tooltip-icon" data-tip="post-tax">?</span></label>
+              <input type="number" id="p-income" placeholder="75000" class="sterling-input"
+                oninput="Dashboard.update()" />
+              <div class="tooltip-card" data-for="post-tax">Post-tax, post-deductions take-home salary</div>
+            </div>
+            <div class="input-group">
+              <label>Monthly Rent / Housing (₹)</label>
+              <input type="number" id="p-rent" placeholder="20000" class="sterling-input"
+                oninput="Dashboard.update()" />
+            </div>
+            <div class="input-group">
+              <label>Existing EMIs (₹/month)</label>
+              <input type="number" id="p-existing-emi" placeholder="5000" class="sterling-input"
+                oninput="Dashboard.update()" />
+            </div>
+            <div class="input-group">
+              <label>Monthly Savings (₹)</label>
+              <input type="number" id="p-savings" placeholder="10000" class="sterling-input"
+                oninput="Dashboard.update()" />
+            </div>
+            <div class="input-group">
+              <label>Monthly Discretionary Spend (₹)</label>
+              <input type="number" id="p-wants" placeholder="15000" class="sterling-input"
+                oninput="Dashboard.update()" />
+            </div>
+            <div class="input-group">
+              <label>Emergency Fund / Savings Balance (₹)</label>
+              <input type="number" id="p-emergency" placeholder="100000" class="sterling-input"
+                oninput="Dashboard.update()" />
+            </div>
           </div>
         </div>
 
-        <!-- Right: Charts + SIP Comparison -->
-        <div>
-          <div class="glass-card mb-4">
-            <h3 class="card-title">Amortization Overview</h3>
-            <canvas id="amort-chart" height="200"></canvas>
+        <!-- KPI Cards Row -->
+        <div class="kpi-row">
+          <div class="kpi-card glass-card">
+            <div class="kpi-label">
+              <span class="link-insight" onclick="goToInsight('foir')">FOIR <span class="tooltip-icon"
+                  data-tip="foir-why">?</span></span>
+            </div>
+            <div class="kpi-value" id="kpi-foir">—</div>
+            <div class="kpi-status" id="kpi-foir-status">Enter income</div>
+            <div class="tooltip-card" data-for="foir-why">Fixed Obligation to Income Ratio — Indian banks cap this at
+              50%. Beyond 50%, you're in the "debt trap zone" where a single job loss cascades into default.</div>
           </div>
-          <div class="glass-card">
-            <h3 class="card-title"><div class="kpi-label link-insight" onclick="goToInsight('sip')">
-  
-💡 Loan vs SIP Path <span class="tooltip-icon" data-tip="sip-why">?</span></div></h3>
-            <div class="tooltip-card" data-for="sip-why">If you invested the same EMI amount in an equity SIP at 12% CAGR instead, would you accumulate the loan amount by the end of tenure? This shows the opportunity cost of debt.</div>
-            <div class="sip-comparison" id="sip-comparison">
-              <div class="sip-path loan-path">
-                <div class="path-icon">🏦</div>
-                <div class="path-label">Loan Path</div>
-                <div class="path-value" id="sip-loan-cost">—</div>
-                <div class="path-sub">Total outflow (Principal + Interest)</div>
+          <div class="kpi-card glass-card">
+            <div class="kpi-label">
+              <span class="link-insight" onclick="goToInsight('budget')">50/30/20 Score<span class="tooltip-icon"
+                  data-tip="budget-why">?</span></span>
+            </div>
+            <div class="kpi-value" id="kpi-budget">—</div>
+            <div class="kpi-status" id="kpi-budget-status">Enter spend data</div>
+          </div>
+          <div class="kpi-card glass-card">
+            <div class="kpi-label">Loan Eligibility</div>
+            <div class="kpi-value" id="kpi-eligibility">—</div>
+            <div class="kpi-status" id="kpi-elig-status">Based on 50% FOIR</div>
+          </div>
+          <div class="kpi-card glass-card">
+            <div class="kpi-label">
+              <span class="link-insight" onclick="goToInsight('emergency')">Runway (months) <span class="tooltip-icon"
+                  data-tip="runway-why">?</span></span>
+            </div>
+            <div class="kpi-value" id="kpi-runway">—</div>
+            <div class="kpi-status" id="kpi-runway-status">Without income</div>
+            <div class="tooltip-card" data-for="runway-why">How many months your savings cover all fixed obligations
+              (rent + EMIs) in a zero-income scenario.</div>
+          </div>
+          <div class="kpi-card glass-card">
+            <div class="kpi-label">
+              <span class="link-insight">
+                Smart EMI <span class="tooltip-icon" data-tip="emi-why">?</span>
+              </span>
+            </div>
+
+            <div class="kpi-dual">
+              <div class="kpi-sub">
+                <div class="kpi-sub-label">Safe</div>
+                <div class="kpi-sub-value" id="smart-safe-emi">—</div>
               </div>
-              <div class="sip-divider">vs</div>
-              <div class="sip-path invest-path">
-                <div class="path-icon">📈</div>
-                <div class="path-label">SIP Path</div>
-                <div class="path-value" id="sip-monthly">—</div>
-                <div class="path-sub" id="sip-sub">Monthly SIP at 12% CAGR to accumulate loan amount</div>
+
+              <div class="kpi-sub">
+                <div class="kpi-sub-label">Max</div>
+                <div class="kpi-sub-value" id="smart-max-emi">—</div>
+              </div>
+            </div>
+
+            <div class="kpi-status">Based on 40% / 50% FOIR</div>
+
+            <div class="tooltip-card" data-for="emi-why">
+              Safe EMI keeps your FOIR under 40% (low stress).
+              Max EMI pushes to 50% (bank limit, higher risk).
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <div class="glass-card chart-card">
+            <h3 class="card-title">Budget Breakdown <span class="badge-info">50/30/20</span></h3>
+            <canvas id="budget-chart" height="220"></canvas>
+            <div id="lifestyle-alert" class="lifestyle-alert hidden">
+              ⚠️ <strong>Lifestyle Alert:</strong> Your "Needs" exceed 60% of income. Consider reducing fixed
+              commitments before taking new loans.
+            </div>
+          </div>
+          <div class="glass-card chart-card">
+            <h3 class="card-title">FOIR Gauge</h3>
+            <canvas id="foir-chart" height="220"></canvas>
+          </div>
+        </div>
+      </section>
+      <!-- ── SECTION: CHATBOT ── -->
+      <section id="section-chatbot" class="section hidden">
+        <div class="glass-card chatbot-header-card">
+          <div class="chatbot-hero">
+            <div class="chatbot-avatar-lg">🤖</div>
+            <div>
+              <h3 class="card-title">Sterling AI — Financial Advisor</h3>
+              <p class="card-sub">Powered by DeepSeek · Ask anything about loans, EMIs, CIBIL, SIPs, budgeting</p>
+            </div>
+            <button onclick="Chatbot.clear()" class="btn-outline" style="margin-left:auto">Clear Chat</button>
+          </div>
+          <div class="chatbot-suggestions">
+            <span class="suggestion-chip" onclick="Chatbot.ask(this)">What is a good FOIR?</span>
+            <span class="suggestion-chip" onclick="Chatbot.ask(this)">Should I prepay my home loan?</span>
+            <span class="suggestion-chip" onclick="Chatbot.ask(this)">How does CIBIL score affect my loan?</span>
+            <span class="suggestion-chip" onclick="Chatbot.ask(this)">SIP vs loan repayment — which is better?</span>
+          </div>
+        </div>
+
+        <div class="chatbot-layout">
+          <div class="glass-card chatbot-window">
+            <div id="chat-output" class="chat-output">
+              <div class="chat-msg bot-msg">
+                <div class="msg-avatar">S</div>
+                <div class="msg-bubble">
+                  Namaste! 🙏 I'm Sterling, your personal Indian finance advisor. Ask me anything about loans, EMIs,
+                  CIBIL scores, SIPs, or financial planning. How can I help you today?
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-input-bar">
+              <input id="chat-input" class="chat-input sterling-input"
+                placeholder="Ask about loans, EMIs, CIBIL, budgeting..." />
+              <button id="chat-send" class="chat-send-btn" onclick="Chatbot.send()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="chatbot-sidebar-panel">
+            <div class="glass-card">
+              <h4 class="card-title" style="font-size:14px">📌 Quick Topics</h4>
+              <div class="quick-topics">
+                <div class="topic-group">
+                  <div class="topic-label">Loans</div>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">EMI calculation explained</span>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">Processing fee and GST impact</span>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">Fixed vs reducing interest rate</span>
+                </div>
+                <div class="topic-group">
+                  <div class="topic-label">Credit</div>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">How to improve CIBIL score fast</span>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">What is credit utilization ratio</span>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">Hard vs soft enquiry difference</span>
+                </div>
+                <div class="topic-group">
+                  <div class="topic-label">Investing</div>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">What is SIP and how does it work</span>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">12% CAGR realistic for equity SIP?</span>
+                  <span class="suggestion-chip" onclick="Chatbot.ask(this)">Emergency fund — how much to save</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card" style="margin-top:16px">
+              <h4 class="card-title" style="font-size:14px">⚠️ Disclaimer</h4>
+              <p style="font-size:11px; color:var(--text-muted); line-height:1.6; margin-top:8px">
+                Sterling AI provides general financial education only. For personalized investment advice, please
+                consult a SEBI-registered financial advisor. All calculations are indicative.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ── SECTION: EMI CALCULATOR ── -->
+      <section id="section-calculator" class="section hidden">
+        <div class="two-col-layout">
+          <!-- Left: Inputs -->
+          <div class="glass-card">
+            <h3 class="card-title">Loan Parameters</h3>
+            <div class="input-group">
+              <label>Loan Amount (₹) <span class="tooltip-icon" data-tip="rb-why">?</span></label>
+              <input type="number" id="c-principal" placeholder="500000" class="sterling-input"
+                oninput="Calculator.compute()" />
+              <div class="tooltip-card" data-for="rb-why">Reducing Balance method: interest is charged only on
+                outstanding principal, not the original amount. This is how you save vs flat-rate loans.</div>
+            </div>
+            <div class="input-group">
+              <label>Annual Interest Rate (%)</label>
+              <input type="number" id="c-rate" placeholder="10.5" step="0.1" class="sterling-input"
+                oninput="Calculator.compute()" />
+            </div>
+            <div class="input-group">
+              <label>Tenure (Months)</label>
+              <input type="number" id="c-tenure" placeholder="60" class="sterling-input"
+                oninput="Calculator.compute()" />
+            </div>
+            <div class="input-group">
+              <label>Processing Fee (%)</label>
+              <input type="number" id="c-fee" placeholder="2" step="0.1" class="sterling-input" value="2"
+                oninput="Calculator.compute()" />
+            </div>
+            <div class="toggle-row">
+              <label>Include GST on Fee (18%)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="c-gst" checked onchange="Calculator.compute()" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="result-box" id="calc-result-box">
+              <div class="result-row"><span>Gross EMI</span><strong id="r-emi">—</strong></div>
+              <div class="result-row"><span>Actual Disbursal (After Fee+GST)</span><strong id="r-disbursal">—</strong>
+              </div>
+              <div class="result-row"><span>Total Interest Paid</span><strong id="r-interest"
+                  class="text-amber">—</strong></div>
+              <div class="result-row"><span>Total Outflow</span><strong id="r-total">—</strong></div>
+              <div class="result-row foir-row"><span>New FOIR (with this loan)</span><strong id="r-foir">—</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Charts + SIP Comparison -->
+          <div>
+            <div class="glass-card mb-4">
+              <h3 class="card-title">Amortization Overview</h3>
+              <canvas id="amort-chart" height="200"></canvas>
+            </div>
+            <div class="glass-card">
+              <h3 class="card-title">
+                <div class="kpi-label link-insight" onclick="goToInsight('sip')">
+
+                  💡 Loan vs SIP Path <span class="tooltip-icon" data-tip="sip-why">?</span></div>
+              </h3>
+              <div class="tooltip-card" data-for="sip-why">If you invested the same EMI amount in an equity SIP at 12%
+                CAGR instead, would you accumulate the loan amount by the end of tenure? This shows the opportunity cost
+                of debt.</div>
+              <div class="sip-comparison" id="sip-comparison">
+                <div class="sip-path loan-path">
+                  <div class="path-icon">🏦</div>
+                  <div class="path-label">Loan Path</div>
+                  <div class="path-value" id="sip-loan-cost">—</div>
+                  <div class="path-sub">Total outflow (Principal + Interest)</div>
+                </div>
+                <div class="sip-divider">vs</div>
+                <div class="sip-path invest-path">
+                  <div class="path-icon">📈</div>
+                  <div class="path-label">SIP Path</div>
+                  <div class="path-value" id="sip-monthly">—</div>
+                  <div class="path-sub" id="sip-sub">Monthly SIP at 12% CAGR to accumulate loan amount</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Amortization Table -->
-      <div class="glass-card mt-4">
-        <div class="table-header">
-          <h3 class="card-title">Amortization Schedule</h3>
-          <div style="display:flex; gap:10px; align-items:center;">
-            <button onclick="Calculator.toggleTable()" class="btn-outline" id="table-toggle-btn">
-              Show Schedule
-            </button>
-            <button onclick="Calculator.prevYear()" class="btn-outline">◀</button>
-            <span id="year-info" style="font-size:12px; color:var(--text-muted);"></span>
-            <button onclick="Calculator.nextYear()" class="btn-outline">▶</button>
+        <!-- Amortization Table -->
+        <div class="glass-card mt-4">
+          <div class="table-header">
+            <h3 class="card-title">Amortization Schedule</h3>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button onclick="Calculator.toggleTable()" class="btn-outline" id="table-toggle-btn">
+                Show Schedule
+              </button>
+              <button onclick="Calculator.prevYear()" class="btn-outline">◀</button>
+              <span id="year-info" style="font-size:12px; color:var(--text-muted);"></span>
+              <button onclick="Calculator.nextYear()" class="btn-outline">▶</button>
+            </div>
+          </div>
+          <div id="amort-table-wrapper" class="hidden">
+            <table class="sterling-table" id="amort-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>EMI</th>
+                  <th>Principal</th>
+                  <th>Interest</th>
+                  <th>Loan Amount Left</th>
+                </tr>
+              </thead>
+              <tbody id="amort-tbody"></tbody>
+            </table>
           </div>
         </div>
-        <div id="amort-table-wrapper" class="hidden">
-          <table class="sterling-table" id="amort-table">
-            <thead><tr><th>Month</th><th>EMI</th><th>Principal</th><th>Interest</th><th>Loan Amount Left</th></tr></thead>
-            <tbody id="amort-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ── SECTION: STRESS TEST ── -->
-    <section id="section-stress" class="section hidden">
-      <div class="glass-card mb-4">
-        <h3 class="card-title">🔥 Financial Stress Test</h3>
-        <p class="card-sub">Simulate adverse scenarios to find your financial breaking point</p>
-        <div class="stress-controls">
-          <div class="input-group">
-            <label>Proposed New EMI (₹)</label>
-            <input type="number" id="s-emi" placeholder="15000" class="sterling-input" oninput="Stress.compute()" />
-          </div>
-          <div class="input-group">
-            <label>Current Savings / Emergency Fund (₹)</label>
-            <input type="number" id="s-savings" placeholder="100000" class="sterling-input" oninput="Stress.compute()" />
-          </div>
-          <div class="toggle-row">
-            <label>🚨 Job Loss Scenario (3 months ₹0 income)</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="s-jobloss" onchange="Stress.compute()" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- 12-Month FOIR Heatmap -->
-      <div class="glass-card mb-4">
-        <h3 class="card-title">12-Month FOIR Projection Heatmap <span class="tooltip-icon" data-tip="heatmap-why">?</span></h3>
-        <div class="tooltip-card" data-for="heatmap-why">Each cell shows your projected FOIR for that month. Red = dangerous (>50%), Amber = caution (40–50%), Green = safe (&lt;40%). Job loss months show the true pressure.</div>
-        <div id="foir-heatmap" class="foir-heatmap"></div>
-        <div class="heatmap-legend">
-          <span class="legend-item safe">■ Safe &lt;40%</span>
-          <span class="legend-item caution">■ Caution 40-50%</span>
-          <span class="legend-item danger">■ Danger >50%</span>
-          <span class="legend-item critical">■ Critical >75%</span>
-        </div>
-      </div>
-
-      <!-- Stress Results -->
-      <div class="stress-result-grid">
-        <div class="glass-card stress-result-card">
-          <div class="stress-icon">🛡️</div>
-          <div class="stress-label">Months to Default</div>
-          <div class="stress-value" id="s-months-default">—</div>
-          <div class="stress-sub">At zero income</div>
-        </div>
-        <div class="glass-card stress-result-card">
-          <div class="stress-icon">💰</div>
-          <div class="stress-label">Safe EMI Ceiling</div>
-          <div class="stress-value" id="s-safe-emi">—</div>
-          <div class="stress-sub">At 40% FOIR (conservative)</div>
-        </div>
-        <div class="glass-card stress-result-card">
-          <div class="stress-icon">⚖️</div>
-          <div class="stress-label">Maximum EMI (50% FOIR)</div>
-          <div class="stress-value" id="s-max-emi">—</div>
-          <div class="stress-sub">Bank's limit — approach with caution</div>
-        </div>
-        <div class="glass-card stress-result-card">
-          <div class="stress-icon">🎯</div>
-          <div class="stress-label">Recommended Buffer</div>
-          <div class="stress-value" id="s-buffer">—</div>
-          <div class="stress-sub">6-month emergency fund target</div>
-        </div>
-      </div>
-
-      <div class="glass-card mt-4">
-        <h3 class="card-title">Income Shock Simulation</h3>
-        <canvas id="stress-chart" height="200"></canvas>
-      </div>
-    </section>
-
-    <!-- ── SECTION: GOAL PLANNER ── -->
-    <section id="section-goals" class="section hidden">
-      <div class="glass-card mb-4">
-        <h3 class="card-title">🎯 Inflation-Adjusted Goal Planner <span class="tooltip-icon" data-tip="inflation-why">?</span></h3>
-        <div class="tooltip-card" data-for="inflation-why">India's average inflation is ~6% annually (RBI target band). A ₹50L house today will cost ₹89.5L in 10 years. Planning with today's cost = dangerous underpreparing.</div>
-        <p class="card-sub">6% annual inflation applied to all future goals (RBI benchmark)</p>
-        <div class="goals-input-row">
-          <div class="input-group">
-            <label>Goal Name</label>
-            <input type="text" id="g-name" placeholder="e.g. Dream Home" class="sterling-input" />
-          </div>
-          <div class="input-group">
-            <label>Today's Cost (₹)</label>
-            <input type="number" id="g-cost" placeholder="5000000" class="sterling-input" />
-          </div>
-          <div class="input-group">
-            <label>Years to Goal</label>
-            <input type="number" id="g-years" placeholder="10" class="sterling-input" />
-          </div>
-          <button onclick="Goals.add()" class="btn-primary">Add Goal</button>
-        </div>
-      </div>
-
-      <div id="goals-list" class="goals-list"></div>
-
-      <div class="glass-card mt-4" id="goals-chart-card" style="display:none">
-        <h3 class="card-title">Goal Cost Inflation Over Time</h3>
-        <canvas id="goals-chart" height="220"></canvas>
-      </div>
-    </section>
-
-    <!-- ── SECTION: CIBIL SIMULATOR ── -->
-    <section id="section-cibil" class="section hidden">
-      <div class="two-col-layout">
-        <div class="glass-card">
-          <h3 class="card-title">🛡️ CIBIL Score Simulator</h3>
-          <p class="card-sub">Analyze your credit mix and simulate score impact</p>
-
-          <div class="input-group">
-            <label>Current CIBIL Score</label>
-            <input type="number" id="cibil-score" placeholder="750" min="300" max="900" class="sterling-input" oninput="Cibil.analyze()" />
-          </div>
-          <div class="input-group">
-            <label>Home / Auto Loans (Secured) — Count</label>
-            <input type="number" id="cibil-secured" placeholder="1" class="sterling-input" oninput="Cibil.analyze()" />
-          </div>
-          <div class="input-group">
-            <label>Personal / Credit Card Loans (Unsecured) — Count</label>
-            <input type="number" id="cibil-unsecured" placeholder="2" class="sterling-input" oninput="Cibil.analyze()" />
-          </div>
-          <div class="input-group">
-            <label>Hard Enquiries in Last 6 Months</label>
-            <input type="number" id="cibil-enquiries" placeholder="1" class="sterling-input" oninput="Cibil.analyze()" />
-          </div>
-          <div class="input-group">
-            <label>Credit Card Utilization (%)</label>
-            <input type="number" id="cibil-util" placeholder="30" max="100" class="sterling-input" oninput="Cibil.analyze()" />
-          </div>
-          <div class="input-group">
-            <label>Missed Payments in Last 12 Months</label>
-            <input type="number" id="cibil-missed" placeholder="0" class="sterling-input" oninput="Cibil.analyze()" />
+      <!-- ── SECTION: STRESS TEST ── -->
+      <section id="section-stress" class="section hidden">
+        <div class="glass-card mb-4">
+          <h3 class="card-title">🔥 Financial Stress Test</h3>
+          <p class="card-sub">Simulate adverse scenarios to find your financial breaking point</p>
+          <div class="stress-controls">
+            <div class="input-group">
+              <label>Proposed New EMI (₹)</label>
+              <input type="number" id="s-emi" placeholder="15000" class="sterling-input" oninput="Stress.compute()" />
+            </div>
+            <div class="input-group">
+              <label>Current Savings / Emergency Fund (₹)</label>
+              <input type="number" id="s-savings" placeholder="100000" class="sterling-input"
+                oninput="Stress.compute()" />
+            </div>
+            <div class="toggle-row">
+              <label>🚨 Job Loss Scenario (3 months ₹0 income)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="s-jobloss" onchange="Stress.compute()" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
           </div>
         </div>
 
-        <div>
-          <div class="glass-card mb-4">
-            <h3 class="card-title">Score Analysis</h3>
-            <div class="cibil-score-display">
-              <canvas id="cibil-gauge" height="180"></canvas>
-              <div class="score-breakdown" id="score-breakdown">
-                <div class="score-item">
-                  <span>Current Score</span>
-                  <strong id="cibil-current">—</strong>
-                </div>
-                <div class="score-item">
-                  <span>Projected (After new loan)</span>
-                  <strong id="cibil-projected">—</strong>
-                </div>
-                <div class="score-item">
-                  <span>Risk Category</span>
-                  <strong id="cibil-risk">—</strong>
+        <!-- 12-Month FOIR Heatmap -->
+        <div class="glass-card mb-4">
+          <h3 class="card-title">12-Month FOIR Projection Heatmap <span class="tooltip-icon"
+              data-tip="heatmap-why">?</span></h3>
+          <div class="tooltip-card" data-for="heatmap-why">Each cell shows your projected FOIR for that month. Red =
+            dangerous (>50%), Amber = caution (40–50%), Green = safe (&lt;40%). Job loss months show the true pressure.
+          </div>
+          <div id="foir-heatmap" class="foir-heatmap"></div>
+          <div class="heatmap-legend">
+            <span class="legend-item safe">■ Safe &lt;40%</span>
+            <span class="legend-item caution">■ Caution 40-50%</span>
+            <span class="legend-item danger">■ Danger >50%</span>
+            <span class="legend-item critical">■ Critical >75%</span>
+          </div>
+        </div>
+
+        <!-- Stress Results -->
+        <div class="stress-result-grid">
+          <div class="glass-card stress-result-card">
+            <div class="stress-icon">🛡️</div>
+            <div class="stress-label">Months to Default</div>
+            <div class="stress-value" id="s-months-default">—</div>
+            <div class="stress-sub">At zero income</div>
+          </div>
+          <div class="glass-card stress-result-card">
+            <div class="stress-icon">💰</div>
+            <div class="stress-label">Safe EMI Ceiling</div>
+            <div class="stress-value" id="s-safe-emi">—</div>
+            <div class="stress-sub">At 40% FOIR (conservative)</div>
+          </div>
+          <div class="glass-card stress-result-card">
+            <div class="stress-icon">⚖️</div>
+            <div class="stress-label">Maximum EMI (50% FOIR)</div>
+            <div class="stress-value" id="s-max-emi">—</div>
+            <div class="stress-sub">Bank's limit — approach with caution</div>
+          </div>
+          <div class="glass-card stress-result-card">
+            <div class="stress-icon">🎯</div>
+            <div class="stress-label">Recommended Buffer</div>
+            <div class="stress-value" id="s-buffer">—</div>
+            <div class="stress-sub">6-month emergency fund target</div>
+          </div>
+        </div>
+
+        <div class="glass-card mt-4">
+          <h3 class="card-title">Income Shock Simulation</h3>
+          <canvas id="stress-chart" height="200"></canvas>
+        </div>
+      </section>
+
+      <!-- ── SECTION: GOAL PLANNER ── -->
+      <section id="section-goals" class="section hidden">
+        <div class="glass-card mb-4">
+          <h3 class="card-title">🎯 Inflation-Adjusted Goal Planner <span class="tooltip-icon"
+              data-tip="inflation-why">?</span></h3>
+          <div class="tooltip-card" data-for="inflation-why">India's average inflation is ~6% annually (RBI target
+            band). A ₹50L house today will cost ₹89.5L in 10 years. Planning with today's cost = dangerous
+            underpreparing.</div>
+          <p class="card-sub">6% annual inflation applied to all future goals (RBI benchmark)</p>
+          <div class="goals-input-row">
+            <div class="input-group">
+              <label>Goal Name</label>
+              <input type="text" id="g-name" placeholder="e.g. Dream Home" class="sterling-input" />
+            </div>
+            <div class="input-group">
+              <label>Today's Cost (₹)</label>
+              <input type="number" id="g-cost" placeholder="5000000" class="sterling-input" />
+            </div>
+            <div class="input-group">
+              <label>Years to Goal</label>
+              <input type="number" id="g-years" placeholder="10" class="sterling-input" />
+            </div>
+            <button onclick="Goals.add()" class="btn-primary">Add Goal</button>
+          </div>
+        </div>
+
+        <div id="goals-list" class="goals-list"></div>
+
+        <div class="glass-card mt-4" id="goals-chart-card" style="display:none">
+          <h3 class="card-title">Goal Cost Inflation Over Time</h3>
+          <canvas id="goals-chart" height="220"></canvas>
+        </div>
+      </section>
+
+      <!-- ── SECTION: CIBIL SIMULATOR ── -->
+      <section id="section-cibil" class="section hidden">
+        <div class="two-col-layout">
+          <div class="glass-card">
+            <h3 class="card-title">🛡️ CIBIL Score Simulator</h3>
+            <p class="card-sub">Analyze your credit mix and simulate score impact</p>
+
+            <div class="input-group">
+              <label>Current CIBIL Score</label>
+              <input type="number" id="cibil-score" placeholder="750" min="300" max="900" class="sterling-input"
+                oninput="Cibil.analyze()" />
+            </div>
+            <div class="input-group">
+              <label>Home / Auto Loans (Secured) — Count</label>
+              <input type="number" id="cibil-secured" placeholder="1" class="sterling-input"
+                oninput="Cibil.analyze()" />
+            </div>
+            <div class="input-group">
+              <label>Personal / Credit Card Loans (Unsecured) — Count</label>
+              <input type="number" id="cibil-unsecured" placeholder="2" class="sterling-input"
+                oninput="Cibil.analyze()" />
+            </div>
+            <div class="input-group">
+              <label>Hard Enquiries in Last 6 Months</label>
+              <input type="number" id="cibil-enquiries" placeholder="1" class="sterling-input"
+                oninput="Cibil.analyze()" />
+            </div>
+            <div class="input-group">
+              <label>Credit Card Utilization (%)</label>
+              <input type="number" id="cibil-util" placeholder="30" max="100" class="sterling-input"
+                oninput="Cibil.analyze()" />
+            </div>
+            <div class="input-group">
+              <label>Missed Payments in Last 12 Months</label>
+              <input type="number" id="cibil-missed" placeholder="0" class="sterling-input" oninput="Cibil.analyze()" />
+            </div>
+          </div>
+
+          <div>
+            <div class="glass-card mb-4">
+              <h3 class="card-title">Score Analysis</h3>
+              <div class="cibil-score-display">
+                <canvas id="cibil-gauge" height="180"></canvas>
+                <div class="score-breakdown" id="score-breakdown">
+                  <div class="score-item">
+                    <span>Current Score</span>
+                    <strong id="cibil-current">—</strong>
+                  </div>
+                  <div class="score-item">
+                    <span>Projected (After new loan)</span>
+                    <strong id="cibil-projected">—</strong>
+                  </div>
+                  <div class="score-item">
+                    <span>Risk Category</span>
+                    <strong id="cibil-risk">—</strong>
+                  </div>
                 </div>
               </div>
             </div>
+            <div class="glass-card">
+              <h3 class="card-title">Credit Insights</h3>
+              <div id="cibil-insights" class="insights-list"></div>
+            </div>
           </div>
-          <div class="glass-card">
-            <h3 class="card-title">Credit Insights</h3>
-            <div id="cibil-insights" class="insights-list"></div>
+        </div>
+
+        <div class="glass-card mt-4">
+          <h3 class="card-title">Credit Mix Visualization <span class="tooltip-icon" data-tip="mix-why">?</span></h3>
+          <div class="tooltip-card" data-for="mix-why">Ideal credit mix: 60–70% secured (home/auto), 30–40% unsecured.
+            Too much unsecured debt signals financial stress to lenders. "Credit Hunger" — 3+ hard enquiries in 6 months
+            — drops your score by 15–30 points.</div>
+          <canvas id="cibil-mix-chart" height="180"></canvas>
+        </div>
+      </section>
+
+      <!-- ── SECTION: INSIGHTS ── -->
+      <section id="section-insights" class="section hidden">
+        <div class="glass-card mb-4">
+          <h3 class="card-title">📚 Financial Knowledge Vault</h3>
+          <p class="card-sub">The "Why" behind every metric — because understanding beats guessing</p>
+        </div>
+
+        <div class="insights-grid">
+          <div id="insight-foir" class="insight-card glass-card">
+            <div class="insight-icon">⚖️</div>
+            <h4>Why 50% FOIR?</h4>
+            <p>The Indian banking safety ceiling. RBI guidelines and CRISIL data show households with FOIR above 50%
+              have 3× higher default probability. Banks use this to protect both you and themselves.</p>
+            <div class="insight-formula">FOIR = (Total EMIs ÷ Gross Income) × 100</div>
+          </div>
+          <div id="insight-inflation" class="insight-card glass-card">
+            <div class="insight-icon">📉</div>
+            <h4>Why 6% Inflation?</h4>
+            <p>India's CPI inflation averages 5.5–6.5% annually. The RBI targets 4% ±2%. Using 6% is conservative
+              planning. At 6%, your money halves in purchasing power every 12 years.</p>
+            <div class="insight-formula">Future Cost = P × (1 + 0.06)ⁿ</div>
+          </div>
+          <div id="insight-rb" class="insight-card glass-card">
+            <div class="insight-icon">🔄</div>
+            <h4>Why Reducing Balance?</h4>
+            <p>Interest is calculated on the outstanding principal, not the original loan amount. This is why prepaying
+              early has outsized impact — you reduce the base on which future interest is calculated.</p>
+            <div class="insight-formula">EMI = P × r(1+r)ⁿ / ((1+r)ⁿ-1)</div>
+          </div>
+          <div id="insight-budget" class="insight-card glass-card">
+            <div class="insight-icon">📊</div>
+            <h4>The 50/30/20 Rule</h4>
+            <p>Popularized by Senator Elizabeth Warren. Needs (50%) = rent + utilities + EMIs. Wants (30%) = dining,
+              travel, lifestyle. Savings (20%) = emergency fund, investments, SIPs.</p>
+            <div class="insight-formula">Needs ≤ 50% | Wants ≤ 30% | Savings ≥ 20%</div>
+          </div>
+          <div id="insight-fee" class="insight-card glass-card">
+            <div class="insight-icon">🏦</div>
+            <h4>Processing Fee & GST</h4>
+            <p>A 2% processing fee on ₹10L = ₹20,000. GST at 18% on that fee = ₹3,600. You pay ₹23,600 at disbursement
+              but receive ₹9,76,400. Your effective interest rate is therefore higher than stated.</p>
+            <div class="insight-formula">Disbursal = P − (Fee + 18% GST on Fee)</div>
+          </div>
+          <div id="insight-sip" class="insight-card glass-card">
+            <div class="insight-icon">🎯</div>
+            <h4>SIP vs Debt — The Opportunity Cost</h4>
+            <p>Nifty 50 CAGR since 1999 is ~14%. Using a conservative 12% for planning, a SIP often accumulates more
+              than the loan cost. But loans enable goals now. The choice depends on urgency vs wealth-building.</p>
+            <div class="insight-formula">SIP Corpus = P × ((1+r)ⁿ − 1) / r × (1+r)</div>
+          </div>
+          <div id="insight-credit" class="insight-card glass-card">
+            <div class="insight-icon">🚨</div>
+            <h4>Credit Hunger Warning</h4>
+            <p>Each hard enquiry drops your CIBIL score by 5–10 points and stays for 2 years. 3+ enquiries in 6 months
+              signals "credit hunger" to banks — a red flag that makes approvals harder and rates higher.</p>
+            <div class="insight-formula">Score Impact ≈ −(enquiries × 7) points</div>
+          </div>
+          <div id="insight-emergency" class="insight-card glass-card">
+            <div class="insight-icon">🛡️</div>
+            <h4>Emergency Fund Rule</h4>
+            <p>The standard rule: 6 months of total fixed obligations (rent + EMIs + utilities). In India, with a
+              volatile job market and fewer social safety nets, 9–12 months is recommended for salaried professionals.
+            </p>
+            <div class="insight-formula">Target = (Rent + All EMIs) × 6</div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="glass-card mt-4">
-        <h3 class="card-title">Credit Mix Visualization <span class="tooltip-icon" data-tip="mix-why">?</span></h3>
-        <div class="tooltip-card" data-for="mix-why">Ideal credit mix: 60–70% secured (home/auto), 30–40% unsecured. Too much unsecured debt signals financial stress to lenders. "Credit Hunger" — 3+ hard enquiries in 6 months — drops your score by 15–30 points.</div>
-        <canvas id="cibil-mix-chart" height="180"></canvas>
-      </div>
-    </section>
+    </main>
+  </div>
 
-    <!-- ── SECTION: INSIGHTS ── -->
-    <section id="section-insights" class="section hidden">
-      <div class="glass-card mb-4">
-        <h3 class="card-title">📚 Financial Knowledge Vault</h3>
-        <p class="card-sub">The "Why" behind every metric — because understanding beats guessing</p>
-      </div>
+  <!-- Tax Info Banner -->
+  <div id="tax-banner" class="tax-banner hidden glass-card">
+    <strong>FY 2026-27 Tax Insight:</strong> Under New Regime, standard deduction of ₹75,000 applies. Income up to
+    ₹12.75L is effectively tax-free. Your in-hand income should reflect post-deduction take-home.
+    <button onclick="this.parentElement.classList.add('hidden')">✕</button>
+  </div>
 
-      <div class="insights-grid">
-        <div id="insight-foir" class="insight-card glass-card">
-          <div class="insight-icon">⚖️</div>
-          <h4>Why 50% FOIR?</h4>
-          <p>FOIR stands for Fixed Obligation to Income Ratio. The Indian banking safety ceiling. RBI guidelines and CRISIL data show households with FOIR above 50% have 3× higher default probability. Banks use this to protect both you and themselves.</p>
-          <div class="insight-formula">FOIR = (Total EMIs ÷ Gross Income) × 100</div>
-        </div>
-        <div id="insight-inflation"class="insight-card glass-card">
-          <div class="insight-icon">📉</div>
-          <h4>Why 6% Inflation?</h4>
-          <p>India's CPI inflation averages 5.5–6.5% annually. The RBI targets 4% ±2%. Using 6% is conservative planning. At 6%, your money halves in purchasing power every 12 years.</p>
-          <div class="insight-formula">Future Cost = P × (1 + 0.06)ⁿ</div>
-        </div>
-        <div id="insight-rb" class="insight-card glass-card">
-          <div class="insight-icon">🔄</div>
-          <h4>Why Reducing Balance?</h4>
-          <p>Interest is calculated on the outstanding principal, not the original loan amount. This is why prepaying early has outsized impact — you reduce the base on which future interest is calculated.</p>
-          <div class="insight-formula">EMI = P × r(1+r)ⁿ / ((1+r)ⁿ-1)</div>
-        </div>
-        <div id="insight-budget" class="insight-card glass-card">
-          <div class="insight-icon">📊</div>
-          <h4>The 50/30/20 Rule</h4>
-          <p>Popularized by Senator Elizabeth Warren. Needs (50%) = rent + utilities + EMIs. Wants (30%) = dining, travel, lifestyle. Savings (20%) = emergency fund, investments, SIPs.</p>
-          <div class="insight-formula">Needs ≤ 50% | Wants ≤ 30% | Savings ≥ 20%</div>
-        </div>
-        <div id="insight-fee" class="insight-card glass-card">
-          <div class="insight-icon">🏦</div>
-          <h4>Processing Fee & GST</h4>
-          <p>A 2% processing fee on ₹10L = ₹20,000. GST at 18% on that fee = ₹3,600. You pay ₹23,600 at disbursement but receive ₹9,76,400. Your effective interest rate is therefore higher than stated.</p>
-          <div class="insight-formula">Disbursal = P − (Fee + 18% GST on Fee)</div>
-        </div>
-        <div id="insight-sip"  class="insight-card glass-card">
-          <div class="insight-icon">🎯</div>
-          <h4>SIP vs Debt — The Opportunity Cost</h4>
-          <p>Nifty 50 CAGR since 1999 is ~14%. Using a conservative 12% for planning, a SIP often accumulates more than the loan cost. But loans enable goals now. The choice depends on urgency vs wealth-building.</p>
-          <div class="insight-formula">SIP Corpus = P × ((1+r)ⁿ − 1) / r × (1+r)</div>
-        </div>
-        <div id="insight-credit" class="insight-card glass-card">
-          <div class="insight-icon">🚨</div>
-          <h4>Credit Hunger Warning</h4>
-          <p>Each hard enquiry drops your CIBIL score by 5–10 points and stays for 2 years. 3+ enquiries in 6 months signals "credit hunger" to banks — a red flag that makes approvals harder and rates higher.</p>
-          <div class="insight-formula">Score Impact ≈ −(enquiries × 7) points</div>
-        </div>
-        <div id="insight-emergency" class="insight-card glass-card">
-          <div class="insight-icon">🛡️</div>
-          <h4>Emergency Fund Rule</h4>
-          <p>The standard rule: 6 months of total fixed obligations (rent + EMIs + utilities). In India, with a volatile job market and fewer social safety nets, 9–12 months is recommended for salaried professionals.</p>
-          <div class="insight-formula">Target = (Rent + All EMIs) × 6</div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-</div>
-
-<!-- Tax Info Banner -->
-<div id="tax-banner" class="tax-banner hidden glass-card">
-  <strong>FY 2026-27 Tax Insight:</strong> Under New Regime, standard deduction of ₹75,000 applies. Income up to ₹12.75L is effectively tax-free. Your in-hand income should reflect post-deduction take-home.
-  <button onclick="this.parentElement.classList.add('hidden')">✕</button>
-</div>
-
-<script src="js/theme.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/calculator.js"></script>
-<script src="js/charts.js"></script>
-<script src="js/insights.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/insights.js"></script>
+  <script src="js/chatbot.js"></script>
 
 </body>
+
 </html>

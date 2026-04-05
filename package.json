@@ -1,21 +1,23 @@
 {
   "name": "sterling-advisory",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "Premium Indian Smart Loan Assistant — Financial Guardrail",
   "main": "backend/server.js",
   "scripts": {
-    "start":   "node backend/server.js",
-    "dev":     "nodemon backend/server.js"
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
   },
   "dependencies": {
-    "bcryptjs":           "^2.4.3",
-    "cors":               "^2.8.5",
-    "dotenv":             "^16.3.1",
-    "express":            "^4.18.2",
+    "@huggingface/inference": "^4.13.15",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
-    "helmet":             "^7.1.0",
-    "jsonwebtoken":       "^9.0.2",
-    "mongoose":           "^8.0.3"
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
