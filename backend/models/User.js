@@ -98,6 +98,6 @@ userSchema.methods.toSafeJSON = function() {
 };
 
 // ── Index on email for fast lookups ───────────────────────────
-userSchema.index({ email: 1 });
+// userSchema.index({ email: 1 });
 
 module.exports = mongoose.model('User', userSchema);
